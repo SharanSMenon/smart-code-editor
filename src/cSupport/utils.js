@@ -1,3 +1,10 @@
+/** 
+ * Thanks goes to https://github.com/binji/wasm-clang for this clang code.
+ * TODO: Replace the current clang compiler with the one from
+ * https://github.com/wapm-packages/clang
+ * If possible.
+*/
+
 function readStr(u8, o, len = -1) {
     let str = '';
     let end = u8.length;
@@ -452,6 +459,15 @@ export const API = (function () {
                 '-fmessage-length', '80',
             ];
 
+            this.clangCommonArgsC = [
+                '-disable-free',
+                '-isysroot', '/',
+                '-internal-isystem', '/include',
+                '-internal-isystem', '/lib/clang/8.0.1/include',
+                '-ferror-limit', '19',
+                '-fmessage-length', '80',
+            ];
+
             this.memfs = new MemFS({
                 compileStreaming: this.compileStreaming,
                 hostWrite: this.hostWrite,
@@ -525,11 +541,53 @@ export const API = (function () {
         }
 
         async compileLinkRun(contents) {
-            const input = `test.cc`;
-            const obj = `test.o`;
-            const wasm = `test.wasm`;
+            const input = `main.cc`;
+            const obj = `main.o`;
+            const wasm = `main.wasm`;
             await this.compile({ input, contents, obj });
             await this.link(obj, wasm);
+
+            const buffer = this.memfs.getFileContents(wasm);
+            const testMod = await this.hostLogAsync(`Compiling ${wasm}`,
+                WebAssembly.compile(buffer));
+            return await this.run(testMod, wasm);
+        }
+
+        async compileC(options) {
+            const input = options.input;
+            const contents = options.contents;
+            const obj = options.obj;
+            // eslint-disable-next-line no-unused-vars
+            const opt = options.opt || '2';
+
+            await this.ready;
+            this.memfs.addFile(input, contents);
+            const clang = await this.getModule(this.clangFilename);
+            return await this.run(clang, 'clang', '-cc1', '-emit-obj',
+                ...this.clangCommonArgsC, '-O2', '-o', obj, '-x',
+                'c', input);
+        }
+
+        async linkC(obj, wasm) {
+            const stackSize = 1024 * 1024;
+
+            const libdir = 'lib/wasm32-wasi';
+            const crt1 = `${libdir}/crt1.o`;
+            await this.ready;
+            const lld = await this.getModule(this.lldFilename);
+            return await this.run(
+                lld, 'wasm-ld', '--no-threads',
+                '--export-dynamic',  // TODO required?
+                '-z', `stack-size=${stackSize}`, `-L${libdir}`, crt1, obj, '-lc',
+                '-o', wasm)
+        }
+
+        async compileLinkRunC(contents) {
+            const input = `main.c`;
+            const obj = `main.o`;
+            const wasm = `main.wasm`;
+            await this.compileC({ input, contents, obj });
+            await this.linkC(obj, wasm);
 
             const buffer = this.memfs.getFileContents(wasm);
             const testMod = await this.hostLogAsync(`Compiling ${wasm}`,

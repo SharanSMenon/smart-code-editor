@@ -1,3 +1,10 @@
+/**
+ * App.js
+ * Created by Sharan Sajiv Menon
+ * 
+ * TOOD: File is slightly bloated and I have unused packages, remove them.
+ */
+
 import './App.css';
 import { useEffect, useRef, useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
@@ -9,10 +16,12 @@ import { startcode, languages } from './constants';
 import ModalContent from './ModalContent';
 import { API } from './cSupport/utils';
 import { getApiOptions } from './cSupport/cSupport';
+import PackageInstaller from './PackageInstaller';
 
 const langDict = {
   "Python": python,
-  "C++": cpp
+  "C++": cpp,
+  "C": cpp
 }
 
 let buffer = "";
@@ -20,27 +29,36 @@ let buffer = "";
 function App() {
   const pyodide = useRef(null);
   const cppApi = useRef(null);
+  const [installedPackages, setInstalledPackages] = useState([])
   const [currentLang, setCurrLang] = useState(languages[0]);
   const [outText, setOutText] = useState("");
   const [loading, setLoading] = useState(true);
   const [code, setCode] = useState(`print("Hello World")`)
   const [modalIsOpen, setIsOpen] = useState(false);
+
+
   const cppOutputFunc = (nText) => {
     buffer += nText
   }
+
+  const installPythonPackage = (packageName) => {
+    pyodide.current.loadPackage(packageName);
+    setInstalledPackages([...installedPackages, packageName])
+  }
+
   const apiOptions = getApiOptions(cppOutputFunc);
 
   useEffect(() => {
     ; (async function () {
       pyodide.current = await window.loadPyodide({
-        indexURL: 'https://cdn.jsdelivr.net/pyodide/dev/full/'
+        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.20.0/full/'
       })
       pyodide.current.runPython(startcode);
       cppApi.current = new API(apiOptions);
       await cppApi.current.compileLinkRun("int main() {}");
       setLoading(false);
     })()
-  }, [pyodide])
+  }, [pyodide, apiOptions])
 
   const runCode = async () => {
     buffer = ""
@@ -50,7 +68,9 @@ function App() {
       setOutText(output)
     } else if (currentLang === "C++") {
       await cppApi.current.compileLinkRun(code)
-      console.log(buffer)
+      setOutText(buffer)
+    } else if (currentLang === "C") {
+      await cppApi.current.compileLinkRunC(code)
       setOutText(buffer)
     }
   }
@@ -73,19 +93,9 @@ function App() {
             Run
           </button>
           <select
-            className='form-select appearance-none
-            block
-            px-6
-            h-10
-            text-base
-            text-white
-            font-semibold
-            bg-slate-700 bg-clip-padding bg-no-repeat hover:bg-slate-600
-            cursor-pointer
-            rounded-md
-            transition
-            ease-in-out
-            m-0 mr-2'
+            className='form-select h-10 center
+            text-white font-semibold cursor-pointer rounded-md mr-2
+            bg-slate-700 hover:bg-slate-600'
             value={currentLang}
             onChange={(e) => {
               setCurrLang(e.target.value)
@@ -93,6 +103,13 @@ function App() {
           >
             {languages.map((lang, i) => <option key={i} value={lang} >{lang}</option>)}
           </select>
+
+          {currentLang === "Python" && (
+            <PackageInstaller 
+            installPackage={installPythonPackage}
+            installedPackages={installedPackages}
+            />
+          )}
 
           <button
             className='about-button h-10 px-6 font-semibold rounded-md 
@@ -117,10 +134,10 @@ function App() {
             langDict[currentLang]()
           ]}
         />
-        <div className="output border border-black w-1/2 p-3 rounded-md break-words">
-          <div className='break-words w-full inline-block' id="codeOutput">
+        <div className="output border overflow-auto border-black w-1/2 p-3 rounded-md break-words">
+          <pre className='break-words w-full inline-block' id="codeOutput">
             {outText}
-          </div>
+          </pre>
         </div>
       </div>
       <Modal
