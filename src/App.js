@@ -8,15 +8,15 @@
 import './App.css';
 import { useEffect, useRef, useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-// import { javascript } from '@codemirror/lang-javascript';
-import Modal from 'react-modal';
 import { python } from '@codemirror/lang-python';
 import { cpp } from '@codemirror/lang-cpp'
 import { startcode, languages } from './constants';
-import ModalContent from './ModalContent';
 import { API } from './cSupport/utils';
 import { getApiOptions } from './cSupport/cSupport';
 import PackageInstaller from './PackageInstaller';
+import { xcodeDark, xcodeLight } from "@uiw/codemirror-theme-xcode"
+import { darkModeOn } from './utils';
+import AboutPage from './AboutPage';
 
 const langDict = {
   "Python": python,
@@ -34,7 +34,22 @@ function App() {
   const [outText, setOutText] = useState("");
   const [loading, setLoading] = useState(true);
   const [code, setCode] = useState(`print("Hello World")`)
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(darkModeOn());
+
+  useEffect(() => {
+    const onModeChange = event => {
+      if (event.matches) {
+        setDarkMode(true)
+      } else {
+        setDarkMode(false)
+      }
+    }
+    window.matchMedia('(prefers-color-scheme: dark)')
+      .addEventListener('change', onModeChange)
+    return () => {
+      window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', onModeChange);
+    }
+  }, [])
 
 
   const cppOutputFunc = (nText) => {
@@ -50,15 +65,20 @@ function App() {
 
   useEffect(() => {
     ; (async function () {
-      pyodide.current = await window.loadPyodide({
-        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.20.0/full/'
-      })
-      pyodide.current.runPython(startcode);
+      try {
+        pyodide.current = await window.loadPyodide({
+          indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.20.0/full/'
+        })
+        pyodide.current.runPython(startcode);
+      } catch (exn) {
+        console.log("Pyodide is already loaded")
+      }
       cppApi.current = new API(apiOptions);
       await cppApi.current.compileLinkRun("int main() {}");
       setLoading(false);
     })()
-  }, [pyodide, apiOptions])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const runCode = async () => {
     buffer = ""
@@ -76,24 +96,24 @@ function App() {
   }
 
   return (
-    <div className="App h-screen p-5">
-      <div className="header mb-4 flex flex-row justify-between">
-        <div className='flex flex-row justify-between'>
+    <div className="App h-screen p-5 dark:bg-slate-800 dark:text-white">
+      <div className="header mb-4 flex-spacing-between">
+        <div className='flex-spacing-between'>
           <h1 className="text-3xl font-bold mr-3">
             Online Code Editor
           </h1>
         </div>
         <div className='flex flex-row'>
           <button
-            className='run-button h-10 px-6 font-semibold rounded-md bg-black text-white mr-2
-           disabled:bg-slate-300 disabled:text-black hover:bg-slate-800'
+            className='run-button btn bg-green-500 text-white mr-2
+           disabled:bg-slate-300 disabled:text-black hover:bg-green-600'
             disabled={loading}
             onClick={runCode}
           >
             Run
           </button>
           <select
-            className='form-select h-10 center
+            className='form-select h-10 transition-colors
             text-white font-semibold cursor-pointer rounded-md mr-2
             bg-slate-700 hover:bg-slate-600'
             value={currentLang}
@@ -105,49 +125,26 @@ function App() {
           </select>
 
           {currentLang === "Python" && (
-            <PackageInstaller 
-            installPackage={installPythonPackage}
-            installedPackages={installedPackages}
+            <PackageInstaller
+              installPackage={installPythonPackage}
+              installedPackages={installedPackages}
             />
           )}
-
-          <button
-            className='about-button h-10 px-6 font-semibold rounded-md 
-            border border-slate-200 hover:bg-slate-200'
-            onClick={() => { setIsOpen(true) }}
-          >
-            About
-          </button>
+          <AboutPage />
         </div>
       </div>
       <div className="code-container flex flex-row h-5/6">
         <CodeMirror
-          value={code}
-          onChange={value => { setCode(value) }}
-          className="w-1/2 mr-4"
-          height='100%'
-          options={{
-            theme: "monokai",
-            keyMap: "sublime",
-          }}
-          extensions={[
-            langDict[currentLang]()
-          ]}
+          value={code} onChange={value => { setCode(value) }}
+          className="w-1/2 mr-4" height='100%' extensions={[langDict[currentLang]()]}
+          theme={darkMode ? xcodeDark : xcodeLight} options={{keyMap: "sublime"}}
         />
-        <div className="output border overflow-auto border-black w-1/2 p-3 rounded-md break-words">
-          <pre className='break-words w-full inline-block' id="codeOutput">
+        <div className="output-block">
+          <pre id="codeOutput">
             {outText}
           </pre>
         </div>
       </div>
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => { setIsOpen(false) }}
-        contentLabel="About"
-        ariaHideApp={false}
-      >
-        <ModalContent setIsOpen={setIsOpen} />
-      </Modal>
     </div>
   );
 }

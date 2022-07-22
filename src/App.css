@@ -7,3 +7,58 @@
 #codeOutput {
     font-family: 'Source Code Pro', monospace;
 }
+
+.btn {
+    @apply  h-10 px-6 font-semibold rounded-md transition;
+}
+
+.smart-modal {
+    @apply bg-white text-black dark:text-white dark:bg-slate-800
+    absolute top-10 left-10 right-10 bottom-10 overflow-auto p-5
+    border border-slate-300 rounded-md transition-opacity;
+}
+
+.smart-modal-overlay {
+    @apply bg-white dark:bg-slate-700 top-0 left-0 right-0 bottom-0 fixed dark:bg-opacity-75 bg-opacity-75 transition-opacity;
+}
+
+.footer>p {
+    @apply text-sm text-slate-600 dark:text-zinc-300
+}
+
+.output-block {
+    @apply border overflow-auto border-black dark:border-zinc-400 w-1/2 p-3 rounded-md
+}
+
+.flex-spacing-between {
+    @apply flex flex-row justify-between
+}
+
+.ReactModal__Content {
+    opacity: 0;
+    transform: scale(0.1);
+    transition: all 300ms ease-in-out;
+}
+
+.ReactModal__Content--after-open{
+    opacity: 1;
+    transform: scale(1)
+}
+
+.ReactModal__Content--before-close{
+    opacity: 0;
+    transform:scale(0.1)
+}
+
+.ReactModal__Overlay {
+    opacity: 0;
+    transition: all 300ms ease-in-out;
+}
+
+.ReactModal__Overlay--after-open{
+    opacity: 1;
+}
+
+.ReactModal__Overlay--before-close{
+    opacity: 0;
+}

@@ -127,3 +127,5 @@ export const allPythonPackages = ["asciitree",
     "yt",
     "zarr"
 ]
+
+export const transitionMS = 300;

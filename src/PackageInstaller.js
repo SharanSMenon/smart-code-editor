@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import './App.css';
 import Modal from 'react-modal';
-import { allPythonPackages } from './constants';
+import { allPythonPackages, transitionMS } from './constants';
 
 const PackageInstaller = ({ installPackage, installedPackages }) => {
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -8,19 +9,23 @@ const PackageInstaller = ({ installPackage, installedPackages }) => {
         <div>
             <button onClick={() => { setIsOpen(true) }}
                 className="package-install-button 
-            h-10 px-6 font-semibold rounded-md bg-zinc-600 text-white mr-2
-           disabled:bg-slate-300 disabled:text-black hover:bg-slate-800">
+            btn bg-fuchsia-700 text-white mr-2
+           disabled:bg-slate-300 disabled:text-black hover:bg-fuchsia-800">
                 Packages
             </button>
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={() => { setIsOpen(false) }}
                 contentLabel="About"
+                className="smart-modal"
                 ariaHideApp={false}
+                closeTimeoutMS={transitionMS}
+                overlayClassName="smart-modal-overlay"
             >
-                <div className="modal-container flex flex-col justify-between h-full">
+                <div className="modal-container flex flex-col 
+                justify-between h-full">
                     <div>
-                        <div className="modal-header flex flex-row justify-between mb-2">
+                        <div className="modal-header flex-spacing-between mb-2">
                             <h2 className="text-3xl font-bold">Install Python Packages</h2>
                             <button onClick={() => { setIsOpen(false) }}>&#x2715;</button>
                         </div>
@@ -29,13 +34,13 @@ const PackageInstaller = ({ installPackage, installedPackages }) => {
                             {
                                 allPythonPackages.map((p, index) => (
                                     <div key={index}>
-                                        <div className='flex flex-row justify-between items-center p-2'>
+                                        <div className='flex-spacing-between items-center p-2'>
                                             <p>{p}</p>
                                             <button
-                                                className={`install-button h-10 px-6 font-semibold rounded-md 
+                                                className={`install-button btn
                                                 border ${installedPackages.includes(p) && "bg-green-600 text-white"}
-                                                ${!installedPackages.includes(p) ? "border-slate-200" : "border-green-600"}
-                                                ${!installedPackages.includes(p) && "hover:bg-slate-200"}`}
+                                                ${!installedPackages.includes(p) ? "border-slate-transitionMS dark:border-white" : "border-green-600"}
+                                                ${!installedPackages.includes(p) && "hover:bg-slate-transitionMS dark:hover:bg-white dark:hover:text-black"}`}
                                                 onClick={() => {
                                                     if (!installedPackages.includes(p)) { installPackage(p) }
                                                 }}> {installedPackages.includes(p) ? "Installed" : "Install"}
@@ -47,7 +52,7 @@ const PackageInstaller = ({ installPackage, installedPackages }) => {
                         </div>
                     </div>
                     <div className="footer pt-5 pb-5">
-                        <p className="text-sm text-slate-600">Created by Sharan Sajiv Menon</p>
+                        <p>Created by Sharan Sajiv Menon</p>
                     </div>
                 </div>
             </Modal>

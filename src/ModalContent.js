@@ -1,7 +1,8 @@
+import './App.css';
 const ModalContent = ({ setIsOpen }) => (
     <div className="modal-container flex flex-col justify-between h-full">
         <div>
-            <div className="modal-header flex flex-row justify-between mb-2">
+            <div className="modal-header flex-spacing-between mb-2">
                 <h2 className="text-3xl font-bold">About</h2>
                 <button onClick={() => { setIsOpen(false) }}>&#x2715;</button>
             </div>
@@ -31,10 +32,12 @@ const ModalContent = ({ setIsOpen }) => (
                     standard library work. Also, there is currently no way to
                     import new packages.
                 </p>
+                <br></br>
+                <p>Source code is <a className="underline" href="https://github.com/SharanSMenon/smart-code-editor">here.</a></p>
             </div>
         </div>
         <div className="footer">
-            <p className="text-sm text-slate-600">Created by Sharan Sajiv Menon</p>
+            <p>Created by Sharan Sajiv Menon</p>
         </div>
     </div>
 )
