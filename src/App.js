@@ -77,7 +77,7 @@ function App() {
       await cppApi.current.compileLinkRun("int main() {}");
       setLoading(false);
     })()
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const runCode = async () => {
@@ -134,15 +134,28 @@ function App() {
         </div>
       </div>
       <div className="code-container flex flex-row h-5/6">
-        <CodeMirror
-          value={code} onChange={value => { setCode(value) }}
-          className="w-1/2 mr-4" height='100%' extensions={[langDict[currentLang]()]}
-          theme={darkMode ? xcodeDark : xcodeLight} options={{keyMap: "sublime"}}
-        />
-        <div className="output-block">
-          <pre id="codeOutput">
-            {outText}
-          </pre>
+        <div className='mr-3 w-1/2 h-full flex flex-col rounded-md p-0'>
+          <div className='codemirror-wrapper'>
+            <CodeMirror
+              value={code} onChange={value => { setCode(value) }}
+              className="w-full h-full" height="100%"
+              extensions={[langDict[currentLang]()]}
+              theme={darkMode ? xcodeDark : xcodeLight} options={{ keyMap: "sublime" }}
+            />
+          </div>
+          <div className='bottom-label'>
+            Code
+          </div>
+        </div>
+        <div className="output-block flex flex-col justify-between">
+          <div className='overflow-auto p-3'>
+            <pre id="codeOutput">
+              {outText}
+            </pre>
+          </div>
+          <div className='bottom-label'>
+            Output
+          </div>
         </div>
       </div>
     </div>

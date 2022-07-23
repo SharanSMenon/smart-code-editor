@@ -17,16 +17,16 @@ const AboutPage = () => {
             </button>
 
             <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={() => { setModalIsOpen(false) }}
-                contentLabel="About"
-                overlayClassName="smart-modal-overlay"
-                className="smart-modal"
-                ariaHideApp={false}
-                closeTimeoutMS={transitionMS}
-            >
-                <ModalContent setIsOpen={setModalIsOpen} />
-            </Modal>
+        isOpen={modalIsOpen}
+        onRequestClose={() => { setModalIsOpen(false) }}
+        contentLabel="About"
+        overlayClassName="smart-modal-overlay"
+        className="smart-modal"
+        ariaHideApp={false}
+        closeTimeoutMS={transitionMS}
+      >
+        <ModalContent setIsOpen={setModalIsOpen} />
+      </Modal>
         </div>)
 }
 

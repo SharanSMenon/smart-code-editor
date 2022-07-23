@@ -27,7 +27,32 @@
 }
 
 .output-block {
-    @apply border overflow-auto border-black dark:border-zinc-400 w-1/2 p-3 rounded-md
+    @apply border-none overflow-auto
+      w-1/2 rounded-md bg-slate-200
+     dark:bg-slate-900 p-0;
+     ;
+}
+
+.search-input {
+    @apply focus:ring-2 mb-2 mt-2
+    focus:ring-blue-500 dark:focus:bg-slate-800 
+    focus:bg-slate-100
+    focus:outline-none appearance-none w-full text-sm leading-6
+     text-slate-900 placeholder-slate-400  
+     dark:border-none border border-slate-100
+    rounded-md py-2 ring-0 
+     dark:bg-slate-700 dark:text-white 
+    shadow-sm;
+}
+
+.codemirror-wrapper {
+    @apply h-full flex flex-col rounded-t-md p-0 overflow-auto border dark:border-none;
+}
+
+.bottom-label {
+    @apply dark:bg-sky-700 m-0 p-2 
+    text-center font-semibold
+  bg-sky-500 rounded-b-md text-white
 }
 
 .flex-spacing-between {
@@ -62,3 +87,6 @@
 .ReactModal__Overlay--before-close{
     opacity: 0;
 }
+
+.cm-wrap { height: 100% }
+.cm-scroller { overflow: auto }
