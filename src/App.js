@@ -8,21 +8,15 @@
 import './App.css';
 import { useEffect, useRef, useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-import { python } from '@codemirror/lang-python';
-import { cpp } from '@codemirror/lang-cpp'
 import { startcode, languages } from './constants';
 import { API } from './cSupport/utils';
 import { getApiOptions } from './cSupport/cSupport';
 import PackageInstaller from './PackageInstaller';
 import { xcodeDark, xcodeLight } from "@uiw/codemirror-theme-xcode"
+import { autocompletion } from "@codemirror/autocomplete"
 import { darkModeOn } from './utils';
 import AboutPage from './AboutPage';
-
-const langDict = {
-  "Python": python,
-  "C++": cpp,
-  "C": cpp
-}
+import { langAutocomplete, langDict} from './codemirrorConfig';
 
 let buffer = "";
 
@@ -139,7 +133,11 @@ function App() {
             <CodeMirror
               value={code} onChange={value => { setCode(value) }}
               className="w-full h-full" height="100%"
-              extensions={[langDict[currentLang]()]}
+              extensions={[
+                langDict[currentLang](), autocompletion({
+                  override:[...langAutocomplete[currentLang]]
+                }),
+              ]}
               theme={darkMode ? xcodeDark : xcodeLight} options={{ keyMap: "sublime" }}
             />
           </div>

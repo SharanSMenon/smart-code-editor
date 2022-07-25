@@ -1,3 +1,4 @@
+/* eslint-disable no-cond-assign */
 /** 
  * Thanks goes to https://github.com/binji/wasm-clang for this clang code.
  * TODO: Replace the current clang compiler with the one from
@@ -36,7 +37,7 @@ export const API = (function () {
     }
 
     class AssertError extends Error {
-        constructor(msg) { super(msg); }
+
     }
 
     function assert(cond) {
