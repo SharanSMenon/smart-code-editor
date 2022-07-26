@@ -1,10 +1,11 @@
-/* eslint-disable no-cond-assign */
 /** 
  * Thanks goes to https://github.com/binji/wasm-clang for this clang code.
  * TODO: Replace the current clang compiler with the one from
  * https://github.com/wapm-packages/clang
  * If possible.
 */
+
+/* eslint-disable no-cond-assign */
 
 function readStr(u8, o, len = -1) {
     let str = '';

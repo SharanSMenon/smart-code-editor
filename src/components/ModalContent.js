@@ -1,4 +1,11 @@
-import './App.css';
+/**
+ * ModalContent.js
+ * Created by Sharan Sajiv Menon
+ * 
+ * Contents of AboutPage.js.
+ */
+
+import '../App.css';
 const ModalContent = ({ setIsOpen }) => (
     <div className="modal-container flex flex-col justify-between h-full">
         <div>

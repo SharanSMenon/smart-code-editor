@@ -2,21 +2,20 @@
  * App.js
  * Created by Sharan Sajiv Menon
  * 
- * TOOD: File is slightly bloated and I have unused packages, remove them.
  */
 
 import './App.css';
 import { useEffect, useRef, useState } from 'react';
 import CodeMirror from '@uiw/react-codemirror';
-import { startcode, languages } from './constants';
+import { startcode, languages } from './utils/constants';
 import { API } from './cSupport/utils';
 import { getApiOptions } from './cSupport/cSupport';
-import PackageInstaller from './PackageInstaller';
+import PackageInstaller from './components/PackageInstaller';
 import { xcodeDark, xcodeLight } from "@uiw/codemirror-theme-xcode"
 import { autocompletion } from "@codemirror/autocomplete"
-import { darkModeOn } from './utils';
-import AboutPage from './AboutPage';
-import { langAutocomplete, langDict} from './codemirrorConfig';
+import { darkModeOn } from './utils/utils';
+import AboutPage from './components/AboutPage';
+import { langAutocomplete, langDict} from './codemirror/codemirrorConfig';
 
 let buffer = "";
 
@@ -45,7 +44,6 @@ function App() {
     }
   }, [])
 
-
   const cppOutputFunc = (nText) => {
     buffer += nText
   }
@@ -57,6 +55,7 @@ function App() {
 
   const apiOptions = getApiOptions(cppOutputFunc);
 
+  // Load pyodide and c++
   useEffect(() => {
     ; (async function () {
       try {
@@ -74,6 +73,7 @@ function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // When run button is pressed.
   const runCode = async () => {
     buffer = ""
     if (currentLang === "Python") {
@@ -97,6 +97,7 @@ function App() {
             Online Code Editor
           </h1>
         </div>
+        {/* Button Toolbar */}
         <div className='flex flex-row'>
           <button
             className='run-button btn bg-green-500 text-white mr-2
@@ -127,7 +128,9 @@ function App() {
           <AboutPage />
         </div>
       </div>
+      {/* Main editor area */}
       <div className="code-container flex flex-row h-5/6">
+        {/* Codemirror section */}
         <div className='mr-3 w-1/2 h-full flex flex-col rounded-md p-0'>
           <div className='codemirror-wrapper'>
             <CodeMirror
@@ -145,6 +148,7 @@ function App() {
             Code
           </div>
         </div>
+        {/* Output section */}
         <div className="output-block flex flex-col justify-between">
           <div className='overflow-auto p-3'>
             <pre id="codeOutput">

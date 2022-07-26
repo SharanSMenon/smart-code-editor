@@ -1,4 +1,5 @@
-
+/* Tailwind.css styles just abstracted into a different file to simplify code. */
+/* We can ignore the warnings surrounding @apply */
 
 * {
     outline:none;
@@ -30,7 +31,6 @@
     @apply border-none overflow-auto
       w-1/2 rounded-md bg-slate-200
      dark:bg-slate-900 p-0;
-     ;
 }
 
 .search-input {
@@ -59,6 +59,10 @@
     @apply flex flex-row justify-between
 }
 
+/* 
+* Animations for React Modal
+* We have separate animtion for the content and the overlay.
+*/
 .ReactModal__Content {
     opacity: 0;
     transform: scale(0.1);
@@ -88,5 +92,6 @@
     opacity: 0;
 }
 
+/* Codemirror */
 .cm-wrap { height: 100% }
 .cm-scroller { overflow: auto }

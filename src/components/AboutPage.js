@@ -1,7 +1,12 @@
+/**
+ * AboutPage.js
+ * Created by Sharan Sajiv Menon
+ */
+
 import { useState } from 'react';
 import Modal from 'react-modal';
-import './App.css'
-import { transitionMS } from './constants';
+import '../App.css'
+import { transitionMS } from '../utils/constants';
 import ModalContent from './ModalContent';
 
 const AboutPage = () => {

@@ -1,3 +1,9 @@
+/** 
+ * Thanks goes to https://github.com/binji/wasm-clang for this clang code.
+ * TODO: Replace the current clang compiler with the one from
+ * https://github.com/wapm-packages/clang
+ * If possible.
+*/
 
 function sleep(ms) {
     return new Promise((resolve, _) => setTimeout(resolve, ms));

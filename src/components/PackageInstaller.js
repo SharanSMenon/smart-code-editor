@@ -1,7 +1,14 @@
+/**
+ * PackageInstaller.js
+ * 
+ * Opens a modal that allows one to install python packages for use
+ * in the python editor. Currently only supports packages pre-built by pyodide.
+ */
+
 import { useEffect, useState } from 'react';
-import './App.css';
+import '../App.css';
 import Modal from 'react-modal';
-import { allPythonPackages, transitionMS } from './constants';
+import { allPythonPackages, transitionMS } from '../utils/constants';
 
 const PackageInstaller = ({ installPackage, installedPackages }) => {
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -17,12 +24,14 @@ const PackageInstaller = ({ installPackage, installedPackages }) => {
 
     return (
         <div>
+            {/* This button lives on the toolbar in App.js */}
             <button onClick={() => { setIsOpen(true) }}
                 className="package-install-button 
             btn bg-fuchsia-700 text-white mr-2
            disabled:bg-slate-300 disabled:text-black hover:bg-fuchsia-800">
                 Packages
             </button>
+            {/* Package installer modal */}
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={() => { setIsOpen(false) }}
@@ -41,11 +50,12 @@ const PackageInstaller = ({ installPackage, installedPackages }) => {
                         </div>
                         <div className="body">
                             <p>Install Python packages to use in your Python programs.</p>
+                            {/* Search bar */}
                             <input value={inputText} onChange={(e) => {setInputText(e.target.value)}}
                             class="search-input" 
                             type="text" aria-label="Filter projects" 
                             placeholder="Filter packages..." />
-
+                            {/* Package List */}
                             {
                                 filterList.map((p, index) => (
                                     <div key={index}>
@@ -66,6 +76,7 @@ const PackageInstaller = ({ installPackage, installedPackages }) => {
                             }
                         </div>
                     </div>
+                    {/* Footer */}
                     <div className="footer pt-5 pb-5">
                         <p>Created by Sharan Sajiv Menon</p>
                     </div>

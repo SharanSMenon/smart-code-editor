@@ -1,3 +1,10 @@
+/**
+ * snippets.js
+ * Created by Sharan Sajiv Menon
+ * 
+ * Here live the snippets that will make it into the CodeMirror editor
+ * for a better coding experience.
+ */
 /* eslint-disable no-template-curly-in-string */
 
 // If you can think of useful snippets, please contribute.

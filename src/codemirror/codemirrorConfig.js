@@ -1,3 +1,9 @@
+/**
+ * codemirrorConfig.js
+ * Created by Sharan Sajiv Menon
+ * 
+ */
+
 import { python } from '@codemirror/lang-python';
 import { cpp } from '@codemirror/lang-cpp'
 import * as snippets from './snippets';
